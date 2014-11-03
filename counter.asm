@@ -21,42 +21,31 @@ comparar:
 	je countC
 	cmp bl, 68 ; letra "D"
 	je countD
-	inc eax ; incremento indice del arreglo
-	cmp bl, 48 ; comparo con fin de cadena
-	je finPrintD
-	jmp comparar
+	jmp EndCountD ; si lo que hay en al no es ni  A,B,C o D sale
 
 countA:;cuenta las ocurrencias de A
 	inc dword[edx] ; aumentar el contador de la a en el arreglo de la pila
 	inc eax ; incremento indice de arreglo
-	cmp bl, 48 ;comparo on fiind e cadena
-	je finPrintD
 	jmp comparar
-finPrintA:
+EndCountA:
 
 countB:;cuenta las ocurrencias de B
 	inc dword[edx + 4] ; aumentar el contador de la b en el arreglo de la pila
 	inc eax ; incremento indice de arreglo
-	cmp bl, 48 ;comparo on fiind e cadena
-	je finPrintD
 	jmp comparar
-finPrintB:
+EndCountB:
 
 countC:;cuenta las ocurrencias de C
 	inc dword[edx + 8] ; aumentar el contador de la c en el arreglo de la pila
 	inc eax ; incremento indice de arreglo
-	cmp bl, 48 ;comparo on fiind e cadena
-	je finPrintD
 	jmp comparar
-finPrintC:
+EndCountC:
 
 countD:;cuenta las ocurrencias de D
 	inc dword[edx + 12] ; aumentar el contador de la d en el arreglo de la pila
-	add eax,4 ; incremento indice de arreglo
-	cmp bl, 48 ;comparo on fiind e cadena
-	je finPrintD
+	inc eax ; incremento indice de arreglo
 	jmp comparar
-finPrintD:
+EndCountD:
 
 	mov esp, ebp
 	pop ebp
