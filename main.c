@@ -87,11 +87,11 @@ void print_encoded_string(char *str) {
  * la tabla con la codificacion usada por cada letra, 'table', y retornar la cadena decodificada en el parametro 'decoded_str'.
  * Es importante agregar al final de 'decoded_str' el caracter null. 
 */
-void decode(char *encoded_str, char *table, char *decoded_str) {
+/*void decode(char *encoded_str, char *table, char *decoded_str) {
 	char def_str[20] = "AAACCBBACBBBBAADDBB";
 	strcpy(decoded_str, def_str);
 } 
-
+*/
 int main(int argc, char *argv[]) {
 
 	// Ejemplo por defecto:
@@ -127,6 +127,11 @@ int main(int argc, char *argv[]) {
 	print_binary_rep(table);
 	printf("Cadena codificada: \n");
 	print_encoded_string(encoded_str);
+
+
+	decode(encoded_str, table, decoded_str);
+	printf("-----------Resultado de la decodificacion--------\n");
+	printf("Cadena decodificada: \n%s\n", decoded_str);
 
 	
 
