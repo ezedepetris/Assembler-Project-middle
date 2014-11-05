@@ -5,7 +5,8 @@ Depetris
 Massimino
 Armas
 
-Codify a string using assembly subrutine invoced by C;
-Decodify a message compress
-https://github.com/ezedepetris/Assembler-Project-middle
+
+Codify a string using an assembly subroutine, invoked by C;
+decodify a compressed string
+->https://github.com/ezedepetris/Assembler-Project-middle-<
 

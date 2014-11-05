@@ -12,28 +12,25 @@ decode:
 	;[ebp + 8] ;cadena codificada
 	;[ebp + 12] ;tabla con las codificaciones
 	;[ebp + 16] ;string vacio para la cadena a decodificar
-	mov ebx, [ebp +12]
-	mov dl , [ebx]
+	mov edx, 0 ;inicializo el registro donde voy a obtener los primeros 8 digitos de la cadena codificada
+	mov ebx, [ebp + 8] 
+	mov dl , [ebx] ; asigno los primeros 8 bits codificados a dl
 
-	mov ebx,0 ;  indice del arreglo para la decodificacion
-	mov edi,0 ; indice del arreglo codificado
-	mov dword[ebp - 4],0 ;contador de shifteos de registro de 8 bits
+	mov ebx, 0 ;  indice del arreglo para la decodificacion
+	mov edi, 0 ; indice del arreglo codificado
+	mov dword[ebp - 4],1 ;contador de shifteos de registro de 8 bits, asigno uno para descontar el primer shifteo que hago
+	shl dl, 1 ;le shiteo un 0 para sacar el 0 del bit mas significativo
 	jmp shift
 
 ;=================
 
-cambiarRegistro0:
-	inc edi ; avanzo al proximo registro de las codificaciones
-	mov dword[ebp - 4], 0 ;reinicio el contador de shifteos
-	jmp finCambiarRegistro0
-
 cambiarRegistro:
 	inc edi ; avanzo al proximo registro de las codificaciones
-	mov ecx, [ebp + 8]
-	mov edx, [ecx + edi]
-	mov dword[ebp - 4], 0 ;reinicio el contador de shifteos
+	mov edx, 0 ;inicializo el registro donde guardo los 8 bits corrientes
+	mov ecx, [ebp + 8] ; asigno la direccion del arreglo
+	mov dl, [ecx + edi] ;asigno los 8 bits corrientes
+	mov dword[ebp - 4], 0 ;reinicio el contador de shifteos hasta el momento
 	jmp finCambiarRegistro
-
 
 ;PRINCIPAL
 
@@ -41,47 +38,35 @@ cambiarRegistro:
 
 shift:
 	mov eax, 0 ; incializo el registro de shifteos
-	;mov edx,0
-	cmp dword[ebp - 4],7 ;comparo para ver si se hicieron 8 shifteos, si se cumplieron cambio al proximo indice
-	je cambiarRegistro0
-finCambiarRegistro0:
-	shl al,1 ;shifteo un uno del principio para luego preguntar si el proximo que se ingreso es 0 sali
 shiftRegs:
-	cmp dword[ebp - 4],7 ;comparo para ver si se hicieron 8 shifteos, si se cumplieron cambio al proximo indice
+	cmp dword[ebp - 4],8 ;comparo para ver si se hicieron 8 shifteos, si se cumplieron cambio al proximo indice
 	je cambiarRegistro
 finCambiarRegistro:
-	shr dl,1 ; arreglo donde esta la codificacion
+	inc dword[ebp - 4]
+	shl dl,1 ; arreglo donde esta la codificacion
 	jnc finShift ; si se vuelve a shiftear un cero es porque termino
 	rcl al,1 ;le shifteo lo que saque del arreglo de codificaciones
-	inc dword[ebp - 4]
 	jmp shiftRegs
 finShift:
 	cmp al, 0
-	dump_regs 234
 	je fin
 
 ;==================
-
-	push dword[ebp + 12]
-	push eax
-	call assignLetter
+	push dword[ebp + 12] ;push de la tabla con la codifiacion de cada letra
+	push eax ;push de la codificacion obtenida
+	call assignLetter ;me dice que letra asignar dependiendo de la codificacion pasada y de la tabla
 	add esp, 8 ;resultado esta en eax
 
 ;==================
-
-	mov ecx,[ebp + 16]
-	mov dword[ecx + ebx], eax
-	mov eax, 0
-	inc ebx
+	mov ecx,[ebp + 16] ; asigno la direccion del arreglo
+	mov dword[ecx + ebx], eax ;muevo al arreglo decodificado la letra obtenida del assignLetter
+	mov eax, 0 ; inicializo el registr
+	inc ebx ;incremento el indice del arreglo decodificado
 	jmp shift
 
 ;==================
 
 fin:
-
-
-
-
 
 
 	mov esp, ebp
